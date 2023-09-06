@@ -1,0 +1,80 @@
+$white: #ffffff !default;
+
+$gray-base: #181b1e !default;
+$gray-100: #f0f3f5 !default; // lighten($gray-base, 85%);
+$gray-200: #e4e7ea !default; // lighten($gray-base, 80%);
+$gray-300: #c8ced3 !default; // lighten($gray-base, 70%);
+$gray-400: #acb4bc !default; // lighten($gray-base, 60%);
+$gray-500: #8f9ba6 !default; // lighten($gray-base, 50%);
+$gray-600: #73818f !default; // lighten($gray-base, 40%);
+$gray-700: #5c6873 !default; // lighten($gray-base, 30%);
+$gray-800: #2f353a !default; // lighten($gray-base, 10%);
+$gray-900: #23282c !default; // lighten($gray-base, 5%);
+$secondary: $gray-300 !default;
+$light: $gray-100 !default;
+$dark: $gray-800 !default;
+
+$grays: () !default;
+$grays: map-merge(
+  (
+    "100": $gray-100,
+    "200": $gray-200,
+    "300": $gray-300,
+    "400": $gray-400,
+    "500": $gray-500,
+    "600": $gray-600,
+    "700": $gray-700,
+    "800": $gray-800,
+    "900": $gray-900,
+    "gray": $gray-600,
+    "gray-dark": $gray-800
+  ),
+  $grays
+);
+
+$primary-100: #f4f3ef !default;
+$primary-200: #d8ecff !default;
+$primary-300: #86c3fc !default;
+$primary-400: #62a7e9 !default;
+$primary-500: #378ad8 !default;
+$primary-600: #0b69c2 !default;
+$primary-700: #0358a3 !default;
+$primary-800: #004581 !default;
+$primary-900: #043057 !default;
+$primary: $primary-500 !default;
+
+$success-100: #cef1e2 !default;
+$success-200: #a1eac3 !default;
+$success-300: #83dfae !default;
+$success-400: #6ac896 !default;
+$success-500: #0cbb70 !default;
+$success-600: #29945b !default;
+$success-700: #0f8647 !default;
+$success-800: #056c35 !default;
+$success-900: #004420 !default;
+$success: $success-500 !default;
+
+$warning-100: #fff4de !default;
+$warning-200: #ffe8bf !default;
+$warning-300: #ffdfa6 !default;
+$warning-400: #ffdb96 !default;
+$warning-500: #ff8800 !default;
+$warning-600: #ec8004 !default;
+$warning-700: #cf7105 !default;
+$warning-800: #af5f01 !default;
+$warning-900: #794100 !default;
+$warning: $warning-500 !default;
+
+$danger-100: #ffe9e9 !default;
+$danger-200: #ffc2c2 !default;
+$danger-300: #ffa1a1 !default;
+$danger-400: #fc7e7e !default;
+$danger-500: #cc0000 !default;
+$danger-600: #cc3939 !default;
+$danger-700: #b72525 !default;
+$danger-800: #9c0c0c !default;
+$danger-900: #720000 !default;
+$danger: $danger-500 !default;
+
+/* You can add global styles to this file, and also import other style files */
+

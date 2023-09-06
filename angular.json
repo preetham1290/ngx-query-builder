@@ -31,9 +31,12 @@
               "src/assets"
             ],
             "styles": [
+              "src/styles/scss/styles.scss",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/prototype-override.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -63,7 +66,14 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "src/styles/scss",
+                  "src/assets",
+                  "./node_modules"
+                ] 
+              }
             }
           },
           "defaultConfiguration": "production"

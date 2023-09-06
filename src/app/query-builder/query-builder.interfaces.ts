@@ -12,6 +12,7 @@ export interface Rule {
   value?: any;
   operator?: string;
   entity?: string;
+  validationMessage?: string;
 }
 
 export interface Option {
@@ -61,6 +62,7 @@ export interface QueryBuilderClassNames {
   removeButton?: string;
   removeButtonSize?: string;
   switchRow?: string;
+  ruleSetswitchRow?: string;
   switchGroup?: string;
   switchLabel?: string;
   switchRadio?: string;
@@ -99,8 +101,8 @@ export interface QueryBuilderConfig {
   removeRule?: (rule: Rule, parent: RuleSet) => void;
   coerceValueForOperator?: (operator: string, value: any, rule: Rule) => any;
   calculateFieldChangeValue?: (currentField: Field,
-                               nextField: Field,
-                               currentValue: any) => any;
+    nextField: Field,
+    currentValue: any) => any;
 }
 
 export interface SwitchGroupContext {

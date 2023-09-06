@@ -1,35 +1,15 @@
-<div [ngClass]="getClassNames('switchRow')">
+<div [ngClass]="[getClassNames(parentValue ? 'ruleSetswitchRow':'switchRow') ,getRuleSetConnector()]">
   <ng-template #defaultArrowIcon>
     <i [ngClass]="getClassNames('arrowIcon')"></i>
   </ng-template>
 
-  <a *ngIf="allowCollapse" (click)="toggleCollapse()" [ngClass]="getClassNames('arrowIconButton', data.collapsed ? 'collapsed' : null)">
+  <a *ngIf="allowCollapse" (click)="toggleCollapse()"
+    [ngClass]="getClassNames('arrowIconButton', data.collapsed ? 'collapsed' : null)">
     <ng-container *ngIf="getArrowIconTemplate() as template; else defaultArrowIcon">
       <ng-container *ngTemplateOutlet="template; context: getArrowIconContext()"></ng-container>
     </ng-container>
   </a>
 
-  <ng-container *ngIf="getButtonGroupTemplate() as template; else defaultButtonGroup">
-    <div [ngClass]="getClassNames('buttonGroup', 'rightAlign')">
-      <ng-container *ngTemplateOutlet="template; context: getButtonGroupContext()"></ng-container>
-    </div>
-  </ng-container>
-
-  <ng-template #defaultButtonGroup>
-    <div [ngClass]="getClassNames('buttonGroup', 'rightAlign')">
-      <button type="button" (click)="addRule()" [ngClass]="getClassNames('button')" [disabled]=disabled>
-        <i [ngClass]="getClassNames('addIcon')"></i> Rule
-      </button>
-      <button type="button" (click)="addRuleSet()" [ngClass]="getClassNames('button')" *ngIf="allowRuleset" [disabled]=disabled>
-        <i [ngClass]="getClassNames('addIcon')"></i> Ruleset
-      </button>
-      <ng-container *ngIf="!!parentValue && allowRuleset">
-        <button type="button" (click)="removeRuleSet()" [ngClass]="getClassNames('button', 'removeButton')" [disabled]=disabled>
-          <i [ngClass]="getClassNames('removeIcon')"></i>
-        </button>
-      </ng-container>
-    </div>
-  </ng-template>
 
   <ng-container *ngIf="getSwitchGroupTemplate() as template; else defaultSwitchGroup">
     <ng-container *ngTemplateOutlet="template; context: getSwitchGroupContext()"></ng-container>
@@ -49,29 +29,43 @@
       </div>
     </div>
   </ng-template>
+
+  <ng-container *ngIf="getButtonGroupTemplate() as template; else defaultButtonGroup">
+    <div [ngClass]="getClassNames('buttonGroup', 'rightAlign')">
+      <ng-container *ngTemplateOutlet="template; context: getButtonGroupContext()"></ng-container>
+    </div>
+  </ng-container>
+
+  <ng-template #defaultButtonGroup>
+    <div class="btn-group align-items-center" dropdown container="body">
+      <button id="button-basic" dropdownToggle type="button" title="Add Condition/Group"
+        class="action-icons mb-0 fas fa-plus fa-xs ml-2" aria-controls="dropdown-basic">
+      </button>
+      <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
+        <li role="menuitem" (click)="addRule()"><a class="dropdown-item py-0"><i class="fas fa-plus"></i>
+            Add Condition</a></li>
+        <li role="menuitem" (click)="addRuleSet()"><a class="dropdown-item py-0"><i class="fas fa-plus"></i>
+            Add Group</a></li>
+      </ul>
+    </div>
+    <div class="btn-group align-items-center" *ngIf="!!parentValue && allowRuleset">
+      <button (click)="removeRuleSet()" *ngIf="allowRuleset" title="Remove Group" type="button"
+        class="action-icons mb-0 fas fa-times fa-xs ml-2 text-danger" aria-controls="dropdown-basic">
+      </button>
+    </div>
+  </ng-template>
 </div>
 
-<div #treeContainer (transitionend)="transitionEnd($event)" [ngClass]="getClassNames('treeContainer', data.collapsed ? 'collapsed' : null)">
-  <ul [ngClass]="getClassNames('tree')" *ngIf="data && data.rules">
-    <ng-container *ngFor="let rule of data.rules;let i=index">
-
-      <ng-container *ngIf="{ruleset: !!rule.rules, invalid: !config.allowEmptyRulesets && rule.rules && rule.rules.length === 0} as local">
-        <li [ngClass]="getQueryItemClassName(local)">
+<div #treeContainer (transitionend)="transitionEnd($event)"
+  [ngClass]="getClassNames('treeContainer', data.collapsed ? 'collapsed' : null)">
+  <ul [ngClass]="[getClassNames('tree')]" *ngIf="data && data.rules">
+    <ng-container *ngFor="let rule of data.rules;let i=index;let islast = last;">
+      <ng-container
+        *ngIf="{ruleset: !!rule.rules, invalid: !config.allowEmptyRulesets && rule.rules && rule.rules.length === 0} as local">
+        <li
+          [ngClass]="[getQueryItemClassName(local, islast), 'list-group-item d-flex align-items-center', getNextElementIsRuleset(i) ? 'next-is-ruleset' : '']"
+          [class.liq-connector]="true" [class.flex-wrap]="local.invalid">
           <ng-container *ngIf="!local.ruleset">
-
-            <ng-container *ngIf="getRemoveButtonTemplate() as template; else defaultRemoveButton">
-              <div [ngClass]="getClassNames('buttonGroup', 'rightAlign')">
-                <ng-container *ngTemplateOutlet="template; context: getRemoveButtonContext(rule)"></ng-container>
-              </div>
-            </ng-container>
-
-            <ng-template #defaultRemoveButton>
-              <div [ngClass]="getClassNames('removeButtonSize', 'rightAlign')">
-                <button type="button" [ngClass]="getClassNames('button', 'removeButton')" (click)="removeRule(rule, data)" [disabled]=disabled>
-                  <i [ngClass]="getClassNames('removeIcon')"></i>
-                </button>
-              </div>
-            </ng-template>
 
             <div *ngIf="entities?.length > 0" class="q-inline-block-display">
               <ng-container *ngIf="getEntityTemplate() as template; else defaultEntity">
@@ -81,8 +75,8 @@
 
             <ng-template #defaultEntity>
               <div [ngClass]="getClassNames('entityControlSize')">
-                <select [ngClass]="getClassNames('entityControl')" [(ngModel)]="rule.entity" (ngModelChange)="changeEntity($event, rule,i,data)"
-                  [disabled]="disabled">
+                <select [ngClass]="getClassNames('entityControl')" [(ngModel)]="rule.entity"
+                  (ngModelChange)="changeEntity($event, rule,i,data)" [disabled]="disabled">
                   <option *ngFor="let entity of entities" [ngValue]="entity.value">
                     {{entity.name}}
                   </option>
@@ -96,8 +90,8 @@
 
             <ng-template #defaultField>
               <div [ngClass]="getClassNames('fieldControlSize')">
-                <select [ngClass]="getClassNames('fieldControl')" [(ngModel)]="rule.field" (ngModelChange)="changeField($event, rule)"
-                  [disabled]="disabled">
+                <select [ngClass]="getClassNames('fieldControl')" [(ngModel)]="rule.field"
+                  (ngModelChange)="changeField($event, rule)" [disabled]="disabled">
                   <option *ngFor="let field of getFields(rule.entity)" [ngValue]="field.value">
                     {{field.name}}
                   </option>
@@ -111,8 +105,8 @@
 
             <ng-template #defaultOperator>
               <div [ngClass]="getClassNames('operatorControlSize')">
-                <select [ngClass]="getClassNames('operatorControl')" [(ngModel)]="rule.operator" (ngModelChange)="changeOperator(rule)"
-                  [disabled]="disabled">
+                <select [ngClass]="getClassNames('operatorControl')" [(ngModel)]="rule.operator"
+                  (ngModelChange)="changeOperator(rule)" [disabled]="disabled">
                   <option *ngFor="let operator of getOperators(rule.field)" [ngValue]="operator">
                     {{operator}}
                   </option>
@@ -126,42 +120,69 @@
 
             <ng-template #defaultInput>
               <div [ngClass]="getClassNames('inputControlSize')" [ngSwitch]="getInputType(rule.field, rule.operator)">
-                <input [ngClass]="getClassNames('inputControl')" [(ngModel)]="rule.value" (ngModelChange)="changeInput()"
-                  [disabled]="disabled" *ngSwitchCase="'string'" type="text">
-                <input [ngClass]="getClassNames('inputControl')" [(ngModel)]="rule.value" (ngModelChange)="changeInput()"
-                  [disabled]="disabled" *ngSwitchCase="'number'" type="number">
-                <input [ngClass]="getClassNames('inputControl')" [(ngModel)]="rule.value" (ngModelChange)="changeInput()"
-                  [disabled]="disabled" *ngSwitchCase="'date'" type="date">
-                <input [ngClass]="getClassNames('inputControl')" [(ngModel)]="rule.value" (ngModelChange)="changeInput()"
-                  [disabled]="disabled" *ngSwitchCase="'time'" type="time">
-                <select [ngClass]="getClassNames('inputControl')" [(ngModel)]="rule.value" (ngModelChange)="changeInput()"
-                  [disabled]="disabled" *ngSwitchCase="'category'">
+                <input [ngClass]="getClassNames('inputControl')" [(ngModel)]="rule.value"
+                  (ngModelChange)="changeInput()" [disabled]="disabled" *ngSwitchCase="'string'" type="text">
+                <input [ngClass]="getClassNames('inputControl')" [(ngModel)]="rule.value"
+                  (ngModelChange)="changeInput()" [disabled]="disabled" *ngSwitchCase="'number'" type="number"
+                  [class.is-invalid]="submitted && rule.validationMessage">
+                <input [ngClass]="getClassNames('inputControl')" [(ngModel)]="rule.value"
+                  (ngModelChange)="changeInput()" [disabled]="disabled" *ngSwitchCase="'date'" type="date">
+                <input [ngClass]="getClassNames('inputControl')" [(ngModel)]="rule.value"
+                  (ngModelChange)="changeInput()" [disabled]="disabled" *ngSwitchCase="'time'" type="time">
+                <select [ngClass]="getClassNames('inputControl')" [(ngModel)]="rule.value"
+                  (ngModelChange)="changeInput()" [disabled]="disabled" *ngSwitchCase="'category'">
                   <option *ngFor="let opt of getOptions(rule.field)" [ngValue]="opt.value">
                     {{opt.name}}
                   </option>
                 </select>
+                <textarea [ngClass]="getClassNames('inputControl')" [(ngModel)]="rule.value"
+                  *ngSwitchCase="'textarea'"></textarea>
                 <ng-container *ngSwitchCase="'multiselect'">
-                  <select [ngClass]="getClassNames('inputControl')" [(ngModel)]="rule.value" (ngModelChange)="changeInput()"
-                    [disabled]="disabled" multiple>
+                  <!-- <select [ngClass]="getClassNames('inputControl')" [(ngModel)]="rule.value"
+                    (ngModelChange)="changeInput()" [disabled]="disabled" multiple>
                     <option *ngFor="let opt of getOptions(rule.field)" [ngValue]="opt.value">
                       {{opt.name}}
                     </option>
-                  </select>
+                  </select> -->
+                  <multiselect-dropdown [settings]="valueFieldSettings" [options]="getOptions(rule.field)"
+                    [ngClass]="[getClassNames('inputControl'), 'p-0']" style="height:auto;" [(ngModel)]="rule.value"
+                    (ngModelChange)="changeInput()"></multiselect-dropdown>
                 </ng-container>
-                <input [ngClass]="getClassNames('inputControl')" [(ngModel)]="rule.value" (ngModelChange)="changeInput()"
-                  [disabled]="disabled" *ngSwitchCase="'boolean'" type="checkbox">
+                <input [ngClass]="getClassNames('inputControl')" [class.is-invalid]="rule.validationMessage"
+                  [(ngModel)]="rule.value" (ngModelChange)="changeInput()" [disabled]="disabled"
+                  *ngSwitchCase="'boolean'" type="checkbox">
+                <div class="invalid-feedback" *ngIf="submitted && rule.validationMessage">
+                  {{rule.validationMessage}}</div>
               </div>
             </ng-template>
 
+            <ng-container *ngIf="getRemoveButtonTemplate() as template; else defaultRemoveButton">
+              <div [ngClass]="getClassNames('buttonGroup', 'rightAlign')">
+                <ng-container *ngTemplateOutlet="template; context: getRemoveButtonContext(rule)"></ng-container>
+              </div>
+            </ng-container>
+
+            <ng-template #defaultRemoveButton>
+              <button (click)="removeRule(rule, data)" [disabled]=disabled title="Remove Rule" type="button"
+                class="action-icons mb-0 fas fa-times fa-xs text-danger" aria-controls="dropdown-basic">
+              </button>
+            </ng-template>
+
           </ng-container>
-          <query-builder *ngIf="local.ruleset" [data]="rule" [disabled]="disabled" [parentTouchedCallback]="parentTouchedCallback || onTouchedCallback"
-            [parentChangeCallback]="parentChangeCallback || onChangeCallback" [parentInputTemplates]="parentInputTemplates || inputTemplates"
-            [parentOperatorTemplate]="parentOperatorTemplate || operatorTemplate" [parentFieldTemplate]="parentFieldTemplate || fieldTemplate"
-            [parentEntityTemplate]="parentEntityTemplate || entityTemplate" [parentSwitchGroupTemplate]="parentSwitchGroupTemplate || switchGroupTemplate"
-            [parentButtonGroupTemplate]="parentButtonGroupTemplate || buttonGroupTemplate" [parentRemoveButtonTemplate]="parentRemoveButtonTemplate || removeButtonTemplate"
-            [parentEmptyWarningTemplate]="parentEmptyWarningTemplate || emptyWarningTemplate" [parentArrowIconTemplate]="parentArrowIconTemplate || arrowIconTemplate"
-            [parentValue]="data" [classNames]="classNames" [config]="config" [allowRuleset]="allowRuleset"
-            [allowCollapse]="allowCollapse" [emptyMessage]="emptyMessage" [operatorMap]="operatorMap">
+          <query-builder *ngIf="local.ruleset" [data]="rule" [disabled]="disabled"
+            [parentTouchedCallback]="parentTouchedCallback || onTouchedCallback"
+            [parentChangeCallback]="parentChangeCallback || onChangeCallback"
+            [parentInputTemplates]="parentInputTemplates || inputTemplates"
+            [parentOperatorTemplate]="parentOperatorTemplate || operatorTemplate"
+            [parentFieldTemplate]="parentFieldTemplate || fieldTemplate"
+            [parentEntityTemplate]="parentEntityTemplate || entityTemplate"
+            [parentSwitchGroupTemplate]="parentSwitchGroupTemplate || switchGroupTemplate"
+            [parentButtonGroupTemplate]="parentButtonGroupTemplate || buttonGroupTemplate"
+            [parentRemoveButtonTemplate]="parentRemoveButtonTemplate || removeButtonTemplate"
+            [parentEmptyWarningTemplate]="parentEmptyWarningTemplate || emptyWarningTemplate"
+            [parentArrowIconTemplate]="parentArrowIconTemplate || arrowIconTemplate" [parentValue]="data"
+            [classNames]="classNames" [config]="config" [allowRuleset]="allowRuleset" [allowCollapse]="allowCollapse"
+            [emptyMessage]="emptyMessage" [operatorMap]="operatorMap" [submitted]="submitted">
           </query-builder>
 
           <ng-container *ngIf="getEmptyWarningTemplate() as template; else defaultEmptyWarning">

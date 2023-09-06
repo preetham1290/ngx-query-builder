@@ -1,20 +1,23 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
-import { FormsModule, } from '@angular/forms';
 
 import { QueryBuilderComponent } from './query-builder/query-builder.component';
 
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { AppComponent } from './app.component';
 import { QueryArrowIconDirective } from './query-builder/query-arrow-icon.directive';
+import { QueryButtonGroupDirective } from './query-builder/query-button-group.directive';
+import { QueryEmptyWarningDirective } from './query-builder/query-empty-warning.directive';
+import { QueryEntityDirective } from './query-builder/query-entity.directive';
 import { QueryFieldDirective } from './query-builder/query-field.directive';
 import { QueryInputDirective } from './query-builder/query-input.directive';
-import { QueryEntityDirective } from './query-builder/query-entity.directive';
 import { QueryOperatorDirective } from './query-builder/query-operator.directive';
-import { QueryButtonGroupDirective } from './query-builder/query-button-group.directive';
-import { QuerySwitchGroupDirective } from './query-builder/query-switch-group.directive';
 import { QueryRemoveButtonDirective } from './query-builder/query-remove-button.directive';
-import { QueryEmptyWarningDirective } from './query-builder/query-empty-warning.directive';
-import { AppComponent } from './app.component';
+import { QuerySwitchGroupDirective } from './query-builder/query-switch-group.directive';
+import { MultiSelectSearchFilter, MultiselectDropdownComponent } from './multiselect-dropdown/multiselect-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -28,12 +31,17 @@ import { AppComponent } from './app.component';
     QuerySwitchGroupDirective,
     QueryRemoveButtonDirective,
     QueryEmptyWarningDirective,
-    QueryArrowIconDirective
+    QueryArrowIconDirective,
+    MultiselectDropdownComponent,
+    MultiSelectSearchFilter
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     CommonModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    BsDropdownModule.forRoot()
   ],
   exports: [
     QueryBuilderComponent,
@@ -45,10 +53,11 @@ import { AppComponent } from './app.component';
     QuerySwitchGroupDirective,
     QueryRemoveButtonDirective,
     QueryEmptyWarningDirective,
-    QueryArrowIconDirective
+    QueryArrowIconDirective,
+    MultiselectDropdownComponent,
+    MultiSelectSearchFilter
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-
